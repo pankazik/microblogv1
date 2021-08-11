@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Microblog</title>
+</head>
+<body>
+<div>
+    Microblog :
+    <a href="{{ url_for('index') }}">Home </a>
+    {% if current_user.is_authenticated%}
+        <span style="margin-left:80%">Logged as <b>{{current_user.username}}</b></span>
+        <a href="{{url_for('logout')}}">Log out</a>
+    {% else %}
+        <a href="{{ url_for('login') }}">Log in </a>
+    {% endif %}
+
+</div>
+<hr>
+<div>
+  {% block content %}
+  {% endblock %}
+</div>
+</body>
+</html>
