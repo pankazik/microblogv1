@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, StringField, PasswordField, BooleanField
+from wtforms import SubmitField, StringField, PasswordField, BooleanField, DateField
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
 from app.models import User
 
@@ -25,3 +25,7 @@ class Registrationform(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError("Please select different email address")
+
+class Postform(FlaskForm):
+    body = StringField('Treść wpisu', validators=[DataRequired()])
+    submit = SubmitField('Dodaj post')

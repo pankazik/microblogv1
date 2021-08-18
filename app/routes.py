@@ -1,23 +1,24 @@
 from app import app, db
 from flask import render_template, flash, redirect, url_for
-from app.forms import Loginform, Registrationform
+from app.forms import Loginform, Registrationform,Postform
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User
-
+from app.models import User,Post
+from datetime import datetime
 
 @app.route('/')
 @app.route('/index')
 @login_required
 def index():
-    posts = [
-        {
-            'author': {'username': 'Maria'}, 'post': 'Awesome pics took in Poland'
-        },
-        {
-            'author': {'username': 'Tom'}, 'post': 'Beautiful dinner in Norway'
-        }
-    ]
-    return render_template('index.html', posts=posts)
+    posty = Post.query.all()
+    return render_template('index.html', posts=posty)
+
+
+@app.route('/user/<username>')
+@login_required
+def userpage(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    posts = Post.query.filter_by(author=user)
+    return render_template('user.html', user=user, posts=posts)
 
 
 @app.route('/logout')
@@ -54,3 +55,20 @@ def register():
         flash('Registered')
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
+
+
+@app.route('/myprofile',methods=['GET','POST'])
+@login_required
+def myprofile():
+    if current_user.is_authenticated:
+        user = User.query.filter_by(username=current_user.username).first()
+        form = Postform()
+        if form.validate_on_submit():
+            print(form.body.data, datetime.utcnow(), user)
+            newpost = Post(body=form.body.data, author=user)
+            db.session.add(newpost)
+            db.session.commit()
+            return redirect(url_for('myprofile'))
+        posts = Post.query.filter_by(author = user)
+        return render_template('myprofile.html',posts=posts,form=form)
+    return redirect(url_for('login'))

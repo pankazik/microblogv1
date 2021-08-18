@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+{% for post in posts %}
+<p>{{post.body}}</p>
+{% endfor %}
+<hr>
+<form method="post" novalidate action="">
+    {{form.hidden_tag()}}
+    {{form.body.label}}<br>
+    {{form.body(size=64)}}
+    {% for error in form.body.errors %}
+    <b>{{error}}</b>
+    {% endfor %}
+    <br>{{form.submit()}}
+</form>
+{% endblock %}

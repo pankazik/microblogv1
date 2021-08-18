@@ -9,7 +9,7 @@
     Microblog :
     <a href="{{ url_for('index') }}">Home </a>
     {% if current_user.is_authenticated%}
-        <span style="margin-left:80%">Logged as <b>{{current_user.username}}</b></span>
+        <span style="margin-left:80%">Logged as   <a href="{{url_for('myprofile')}}">{{current_user.username}}</a></span>
         <a href="{{url_for('logout')}}">Log out</a>
     {% else %}
         <a href="{{ url_for('login') }}">Log in </a>
